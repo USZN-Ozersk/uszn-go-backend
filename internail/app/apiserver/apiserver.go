@@ -39,7 +39,7 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.logger.Info("Starting api server")
+	s.logger.Info("Starting api server at port " + s.config.BindAddr)
 
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
@@ -64,7 +64,7 @@ func (s *APIServer) configureStore() error {
 	if err := st.Open(); err != nil {
 		return err
 	}
-
+	s.logger.Info("Connected to DB")
 	s.store = st
 
 	return nil

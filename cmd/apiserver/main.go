@@ -1,12 +1,12 @@
 package main
 
-import "github.com/USZN-Ozersk/uszn-go-backend/internail/app/apiserver"
+import (
+	"flag"
+	"log"
 
-import "log"
-
-import "flag"
-
-import "github.com/burntsushi/toml"
+	"github.com/USZN-Ozersk/uszn-go-backend/internail/app/apiserver"
+	"github.com/burntsushi/toml"
+)
 
 var configPath string
 
