@@ -1,15 +1,19 @@
 package logger
 
-import "github.com/sirupsen/logrus"
+import (
+	"uszn-go-test/internal/app/config"
+
+	"github.com/sirupsen/logrus"
+)
 
 // Logger ...
 type Logger struct {
 	Logger *logrus.Logger
-	config *Config
+	config *config.Config
 }
 
 // New ...
-func New(config *Config) *Logger {
+func New(config *config.Config) *Logger {
 	return &Logger{
 		Logger: logrus.New(),
 		config: config,

@@ -7,4 +7,5 @@ RUN go mod download
 COPY . .
 RUN go build -v ./cmd/apiserver
 EXPOSE 8080
+#CMD ["/app/apiserver", "-config-path", "config/config.toml"]
 CMD ["/app/apiserver"]

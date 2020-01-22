@@ -2,19 +2,20 @@ package apiserver
 
 import (
 	"net/http"
+	"uszn-go-test/internal/app/config"
 	"uszn-go-test/internal/app/logger"
 	"uszn-go-test/internal/app/router"
 )
 
 // APIServer ...
 type APIServer struct {
-	config *Config
+	config *config.Config
 	logger *logger.Logger
 	router *router.Router
 }
 
 // New ...
-func New(config *Config, logger *logger.Logger, router *router.Router) *APIServer {
+func New(config *config.Config, logger *logger.Logger, router *router.Router) *APIServer {
 	return &APIServer{
 		config: config,
 		logger: logger,
