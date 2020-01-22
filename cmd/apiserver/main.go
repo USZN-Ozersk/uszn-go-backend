@@ -1,29 +1,25 @@
 package main
 
 import (
-	"flag"
 	"log"
-
-	"github.com/USZN-Ozersk/uszn-go-backend/internail/app/apiserver"
-	"github.com/burntsushi/toml"
+	"uszn-go-test/internal/app/apiserver"
+	"uszn-go-test/internal/app/logger"
+	"uszn-go-test/internal/app/router"
 )
 
-var configPath string
-
-func init() {
-	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
-}
-
 func main() {
-	flag.Parse()
-
-	config := apiserver.NewConfig()
-	_, err := toml.DecodeFile(configPath, config)
-	if err != nil {
+	logger := logger.New(logger.NewConfig())
+	if err := logger.InitLogger(); err != nil {
 		log.Fatal(err)
 	}
-	s := apiserver.New(config)
-	if err := s.Start(); err != nil {
-		log.Fatal(err)
+
+	logger.Logger.Info("Logger module initialised")
+
+	router := router.New(logger)
+	router.ConfigureRouter()
+
+	apiserver := apiserver.New(apiserver.NewConfig(), logger, router)
+	if err := apiserver.Start(); err != nil {
+		logger.Logger.Fatal(err)
 	}
 }
