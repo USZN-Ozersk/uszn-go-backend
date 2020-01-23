@@ -3,8 +3,7 @@ package router
 import (
 	"io"
 	"net/http"
-	logg "uszn-go-backend/internal/app/logger"
-	"uszn-go-backend/internal/app/store"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
 
 	"github.com/gorilla/mux"
 )

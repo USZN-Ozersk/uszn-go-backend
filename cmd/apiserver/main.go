@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"log"
-	"uszn-go-backend/internal/app/apiserver"
-	"uszn-go-backend/internal/app/config"
-	"uszn-go-backend/internal/app/logger"
-	"uszn-go-backend/internal/app/router"
-	"uszn-go-backend/internal/app/store"
+
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/apiserver"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/router"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
 )
 
 var config_path string

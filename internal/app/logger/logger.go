@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"uszn-go-backend/internal/app/config"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
 
 	"github.com/sirupsen/logrus"
 )

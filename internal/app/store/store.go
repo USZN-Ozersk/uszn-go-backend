@@ -2,8 +2,8 @@ package store
 
 import (
 	"database/sql"
-	"uszn-go-backend/internal/app/config"
-	"uszn-go-backend/internal/app/logger"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 
 	_ "github.com/lib/pq"
 )

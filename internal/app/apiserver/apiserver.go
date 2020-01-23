@@ -2,9 +2,9 @@ package apiserver
 
 import (
 	"net/http"
-	"uszn-go-backend/internal/app/config"
-	"uszn-go-backend/internal/app/logger"
-	"uszn-go-backend/internal/app/router"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/router"
 )
 
 // APIServer ...
