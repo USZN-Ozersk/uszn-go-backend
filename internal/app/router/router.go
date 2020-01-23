@@ -3,7 +3,8 @@ package router
 import (
 	"io"
 	"net/http"
-	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
+
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 
 	"github.com/gorilla/mux"
 )
@@ -11,12 +12,11 @@ import (
 // Router ...
 type Router struct {
 	Router *mux.Router
-	logger *logg.Logger
-	store  *store.Store
+	logger *logger.Logger
 }
 
 // New ...
-func New(logger *logg.Logger) *Router {
+func New(logger *logger.Logger) *Router {
 	return &Router{
 		Router: mux.NewRouter(),
 		logger: logger,
