@@ -1,9 +1,10 @@
-package route
+package router
 
 import (
 	"io"
 	"net/http"
-	"uszn-go-backend/internal/app/logg"
+	logg "uszn-go-backend/internal/app/logger"
+	"uszn-go-backend/internal/app/store"
 
 	"github.com/gorilla/mux"
 )
@@ -12,6 +13,7 @@ import (
 type Router struct {
 	Router *mux.Router
 	logger *logg.Logger
+	store  *store.Store
 }
 
 // New ...
