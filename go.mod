@@ -1,4 +1,4 @@
-module uszn-go-test
+module uszn-go-backend
 
 go 1.13
 

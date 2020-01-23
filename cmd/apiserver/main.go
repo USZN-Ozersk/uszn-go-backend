@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"log"
-	"uszn-go-test/internal/app/apiserver"
-	"uszn-go-test/internal/app/config"
-	"uszn-go-test/internal/app/logger"
-	"uszn-go-test/internal/app/router"
+	"uszn-go-backend/internal/app/api"
+	"uszn-go-backend/internal/app/conf"
+	"uszn-go-backend/internal/app/logg"
+	"uszn-go-backend/internal/app/route"
 )
 
 var config_path string
@@ -18,22 +18,22 @@ func init() {
 func main() {
 	flag.Parse()
 
-	config := config.New()
+	config := conf.New()
 	if err := config.InitConfig(config_path); err != nil {
 		log.Fatal(err)
 	}
 
-	logger := logger.New(config)
+	logger := logg.New(config)
 	if err := logger.InitLogger(); err != nil {
 		log.Fatal(err)
 	}
 
 	logger.Logger.Info("Logger module initialised")
 
-	router := router.New(logger)
+	router := route.New(logger)
 	router.ConfigureRouter()
 
-	apiserver := apiserver.New(config, logger, router)
+	apiserver := api.New(config, logger, router)
 	if err := apiserver.Start(); err != nil {
 		logger.Logger.Fatal(err)
 	}
