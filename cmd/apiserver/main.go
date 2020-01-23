@@ -31,10 +31,12 @@ func main() {
 
 	logger.Logger.Info("Logger module initialised")
 
-	store := store.New(config)
+	store := store.New(config, logger)
 	if err := store.Open(); err != nil {
 		logger.Logger.Fatal(err)
 	}
+
+	defer store.Close()
 
 	router := router.New(logger)
 	router.ConfigureRouter()

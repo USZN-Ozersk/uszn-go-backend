@@ -5,14 +5,15 @@ services:
         ports: 
             - "8080:8080"
         links: 
-            - db
-    db:
+            - pgdb
+        depends_on: 
+            - pgdb
+    pgdb:
         image: postgres
         restart: always
         environment:
-            POSTGRES_USER: test
-            POSTGRES_PASSWORD: test
-            POSTGRES_DB: apidata
+            POSTGRES_USER: api
+            POSTGRES_PASSWORD: password
             PGDATA: /var/lib/pgsql/data
         volumes: 
             - "/var/lib/pgsql/data:/var/lib/pgsql/data"
