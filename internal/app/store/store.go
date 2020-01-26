@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 
@@ -12,7 +13,7 @@ import (
 type Store struct {
 	config *config.Config
 	logger *logger.Logger
-	db     *sql.DB
+	Db     *sql.DB
 }
 
 // New ...

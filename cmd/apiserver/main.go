@@ -39,7 +39,7 @@ func main() {
 
 	defer store.Close()
 
-	router := router.New(logger)
+	router := router.New(logger, store)
 	router.ConfigureRouter()
 
 	apiserver := apiserver.New(config, logger, router)

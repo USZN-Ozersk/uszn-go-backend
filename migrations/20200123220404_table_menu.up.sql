@@ -1,5 +1,5 @@
 CREATE TABLE menu (
-    id serial not null primary key,
-    menuitem varchar not null,
-    parent_id integer foreign key unique REFERENCES menu (id)
+    menu_id serial not null primary key,
+    menu_item varchar not null,
+    menu_parent integer REFERENCES menu (menu_id) ON DELETE cascade
 );

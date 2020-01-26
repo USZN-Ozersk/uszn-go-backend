@@ -1,7 +1,8 @@
 package models
 
+// Menu ...
 type Menu struct {
-	id        int
-	menuitem  string
-	parent_id int
+	MenuId     int    `json:"menu_id"`
+	MenuItem   string `json:"menu_item"`
+	MenuParent int    `json:"menu_parent"`
 }
