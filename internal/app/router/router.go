@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/repos"
@@ -33,11 +35,14 @@ func (r *Router) ConfigureRouter() {
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 
-func (r *Router) handleGetMenu() http.HandleFunc {
-	if menuData, err := repos.GetMenus(r.store); err != nil {
-		r.logger.Logger.Log(err)
+func (r *Router) handleGetMenu() http.HandlerFunc {
+	menuData, err := repos.GetMenus(r.store)
+	if err != nil {
+		r.logger.Logger.Error(err)
 	}
-	return func(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(menuData)
 
+	return func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello")
 	}
 }

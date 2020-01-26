@@ -5,14 +5,26 @@ import (
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
 )
 
-func GetMenus(s *store.Store) ([]models.Menu, err) {
-	var result []models.Menu
-	if rows, err := s.Db.Query("SELECT * FROM menus"); err != nil {
-		return err
+func GetMenus(s *store.Store) ([]models.Menu, error) {
+	var results []models.Menu
+	rows, err := s.Db.Query("SELECT * FROM menu")
+	if err != nil {
+		return nil, err
 	}
 
 	defer rows.Close()
+
 	for rows.Next() {
-		//result
+		var (
+			menuId     int
+			menuItem   string
+			menuParent int
+		)
+		if err := rows.Scan(&menuId, &menuItem, &menuParent); err != nil {
+			return nil, err
+		}
+
+		results = append(results, models.Menu{MenuId: menuId, MenuItem: menuItem, MenuParent: menuParent})
 	}
+	return results, nil
 }

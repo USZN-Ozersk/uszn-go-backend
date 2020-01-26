@@ -35,7 +35,7 @@ func (s *Store) Open() error {
 		return err
 	}
 
-	s.db = db
+	s.Db = db
 
 	s.logger.Logger.Info("Database connected")
 
@@ -44,6 +44,6 @@ func (s *Store) Open() error {
 
 // Close ...
 func (s *Store) Close() {
-	s.db.Close()
+	s.Db.Close()
 	s.logger.Logger.Info("Database connected")
 }
