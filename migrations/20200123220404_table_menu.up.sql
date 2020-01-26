@@ -1,5 +1,5 @@
 CREATE TABLE menu (
-    id bigserial not null primary key,
+    id serial not null primary key,
     menuitem varchar not null,
-    parent_menu bigserial
+    parent_menu integer REFERENCES menu (id)
 );

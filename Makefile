@@ -1,5 +1,13 @@
 .PHONY: build
 build:
-		sudo docker build -t apiserver . && sudo docker run --publish 8080:8080 --name apiserver --rm apiserver
+		sudo docker-compose build && sudo docker-compose up
+
+.PHONY: migrate
+migrate:
+		migrate -path migrations -database postgres://api:password@127.0.0.1/api?sslmode=disable up
+
+.PHONY:
+drop:
+		migrate -path migrations -database postgres://api:password@127.0.0.1/api?sslmode=disable drop
 
 .DEFAULT_GOAL := build
