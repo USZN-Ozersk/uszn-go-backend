@@ -5,9 +5,10 @@ import (
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
 )
 
+// GetMenus ...
 func GetMenus(s *store.Store) ([]models.Menu, error) {
 	var results []models.Menu
-	rows, err := s.Db.Query("SELECT * FROM menu")
+	rows, err := s.Db.Query("SELECT menu_id, menu_item, COALESCE(menu_parent, '') as menu_parent FROM menu")
 	if err != nil {
 		return nil, err
 	}
@@ -15,16 +16,12 @@ func GetMenus(s *store.Store) ([]models.Menu, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var (
-			menuId     int
-			menuItem   string
-			menuParent int
-		)
-		if err := rows.Scan(&menuId, &menuItem, &menuParent); err != nil {
+		var result models.Menu
+		if err := rows.Scan(&result.MenuId, &result.MenuItem, &result.MenuParent); err != nil {
 			return nil, err
 		}
 
-		results = append(results, models.Menu{MenuId: menuId, MenuItem: menuItem, MenuParent: menuParent})
+		results = append(results, result)
 	}
 	return results, nil
 }
