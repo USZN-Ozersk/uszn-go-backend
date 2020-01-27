@@ -8,7 +8,7 @@ import (
 // GetMenus ...
 func GetMenus(s *store.Store) ([]models.Menu, error) {
 	var results []models.Menu
-	rows, err := s.Db.Query("SELECT * FROM menu")
+	rows, err := s.Db.Query("SELECT menu_id, menu_item, COALESCE(menu_parent, '') as menu_parent FROM menu")
 	if err != nil {
 		return nil, err
 	}
@@ -17,8 +17,12 @@ func GetMenus(s *store.Store) ([]models.Menu, error) {
 
 	for rows.Next() {
 		var result models.Menu
+<<<<<<< HEAD
 
 		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent); err != nil {
+=======
+		if err := rows.Scan(&result.MenuId, &result.MenuItem, &result.MenuParent); err != nil {
+>>>>>>> 12072f2554d374c310f103e3c96a68212bf4dab6
 			return nil, err
 		}
 
