@@ -16,16 +16,13 @@ func GetMenus(s *store.Store) ([]models.Menu, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var (
-			menuID     string
-			menuItem   string
-			menuParent string
-		)
-		if err := rows.Scan(&menuID, &menuItem, &menuParent); err != nil {
+		var result models.Menu
+
+		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent); err != nil {
 			return nil, err
 		}
 
-		results = append(results, models.Menu{MenuID: menuID, MenuItem: menuItem, MenuParent: menuParent})
+		results = append(results, result)
 	}
 	return results, nil
 }
