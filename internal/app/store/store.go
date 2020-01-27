@@ -45,5 +45,5 @@ func (s *Store) Open() error {
 // Close ...
 func (s *Store) Close() {
 	s.Db.Close()
-	s.logger.Logger.Info("Database connected")
+	s.logger.Logger.Info("Database disconnected")
 }
