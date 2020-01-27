@@ -1,6 +1,6 @@
 CREATE TABLE menu (
     menu_id SERIAL NOT NULL PRIMARY KEY,
     menu_item VARCHAR NOT NULL,
-    menu_parent INTEGER NOT NULL DEFAULT 0
+    menu_parent INTEGER NOT NULL DEFAULT 0,
     menu_page INTEGER NOT NULL DEFAULT 0
 );

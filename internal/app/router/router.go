@@ -1,8 +1,7 @@
 package router
 
 import (
-	"fmt"
-	"io"
+	"encoding/json"
 	"net/http"
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/repos"
@@ -35,14 +34,13 @@ func (r *Router) ConfigureRouter() {
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 
-func (r *Router) handleGetMenu() http.HandlerFunc {
-	menuData, err := repos.GetMenus(r.store)
-	if err != nil {
-		r.logger.Logger.Error(err)
-	}
-	fmt.Println(menuData)
-
+func (rt *Router) handleGetMenu() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello")
+		menu, err := repos.GetMenus(rt.store)
+		if err != nil {
+			rt.logger.Logger.Error(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(menu)
 	}
 }
