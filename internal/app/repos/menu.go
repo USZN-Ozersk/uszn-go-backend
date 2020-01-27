@@ -17,12 +17,8 @@ func GetMenus(s *store.Store) ([]models.Menu, error) {
 
 	for rows.Next() {
 		var result models.Menu
-<<<<<<< HEAD
 
 		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent); err != nil {
-=======
-		if err := rows.Scan(&result.MenuId, &result.MenuItem, &result.MenuParent); err != nil {
->>>>>>> 12072f2554d374c310f103e3c96a68212bf4dab6
 			return nil, err
 		}
 
