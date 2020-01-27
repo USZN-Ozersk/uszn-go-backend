@@ -1,6 +1,6 @@
 CREATE TABLE news (
-    news_id serial primary key not null,
-    news_name varchar not null,
-    news_date date not null default current_date,
-    news_text text not null
+    news_id SERIAL PRIMARY KEY NOT NULL,
+    news_name VARCHAR NOT NULL,
+    news_date DATE NOT NULL DEFAULT current_date,
+    news_text TEXT NOT NULL
 );

@@ -1,5 +1,6 @@
 CREATE TABLE menu (
-    menu_id serial not null primary key,
-    menu_item varchar not null,
-    menu_parent integer REFERENCES menu (menu_id) ON DELETE cascade
+    menu_id SERIAL NOT NULL PRIMARY KEY,
+    menu_item VARCHAR NOT NULL,
+    menu_parent INTEGER NOT NULL DEFAULT 0
+    menu_page INTEGER NOT NULL DEFAULT 0
 );
