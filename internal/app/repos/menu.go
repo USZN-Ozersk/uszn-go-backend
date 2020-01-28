@@ -6,7 +6,7 @@ import (
 )
 
 // GetMenus ...
-func GetMenus(s *store.Store) ([]models.Menu, error) {
+func GetMenus(s *store.Store) (*[]models.Menu, error) {
 	var results []models.Menu
 	rows, err := s.Db.Query("SELECT * FROM menu")
 	if err != nil {
@@ -24,5 +24,5 @@ func GetMenus(s *store.Store) ([]models.Menu, error) {
 
 		results = append(results, result)
 	}
-	return results, nil
+	return &results, nil
 }
