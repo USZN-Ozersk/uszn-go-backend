@@ -1,14 +1,16 @@
 package repos
 
 import (
+	"strconv"
+
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/models"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
 )
 
-// GetNews ...
-func GetNews(r *store.Store) (*[]models.News, error) {
+// GetFirstNews ...
+func GetFirstNews(r *store.Store, count string) (*[]models.News, error) {
 	var results []models.News
-	rows, err := r.Db.Query("SELECT * FROM news")
+	rows, err := r.Db.Query("SELECT * FROM news order by news_id desc fetch first $1 rows only", count)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +20,7 @@ func GetNews(r *store.Store) (*[]models.News, error) {
 	for rows.Next() {
 		var result models.News
 
-		if err := rows.Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText); err != nil {
+		if err := rows.Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText, &result.NewsImg); err != nil {
 			return nil, err
 		}
 		result.CutNewsText(150)
@@ -31,9 +33,44 @@ func GetNews(r *store.Store) (*[]models.News, error) {
 // GetOneNews ...
 func GetOneNews(r *store.Store, id string) (*models.News, error) {
 	var result models.News
-	if err := r.Db.QueryRow("SELECT * FROM news WHERE news_id = $1", id).Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText); err != nil {
+	if err := r.Db.QueryRow("SELECT * FROM news WHERE news_id = $1", id).Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText, &result.NewsImg); err != nil {
 		return nil, err
 	}
 
 	return &result, nil
+}
+
+// CountNews ...
+func CountNews(r *store.Store) (int, error) {
+	var count int
+	if err := r.Db.QueryRow("SELECT COUNT(*) FROM news").Scan(&count); err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// GetPageOfNews ...
+func GetPageOfNews(r *store.Store, page string) (*[]models.News, error) {
+	var results []models.News
+	c, err := strconv.Atoi(page)
+	rows, err := r.Db.Query("SELECT * FROM news ORDER BY news_id DESC LIMIT 10 OFFSET $1", c*10)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var result models.News
+
+		if err := rows.Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText, &result.NewsImg); err != nil {
+			return nil, err
+		}
+		result.CutNewsText(150)
+		results = append(results, result)
+	}
+
+	return &results, nil
+
 }

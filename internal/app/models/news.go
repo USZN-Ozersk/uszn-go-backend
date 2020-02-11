@@ -6,6 +6,7 @@ type News struct {
 	NewsName string `json:"news_name"`
 	NewsDate string `json:"news_date"`
 	NewsText string `json:"news_text"`
+	NewsImg  string `json:"news_img"`
 }
 
 // CutNewsText ...

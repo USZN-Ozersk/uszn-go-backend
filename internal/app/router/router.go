@@ -32,8 +32,7 @@ func New(logger *logger.Logger, store *store.Store) *Router {
 func (r *Router) ConfigureRouter() {
 	r.Router.HandleFunc("/api/v1/menu", r.handleGetMenu()).Methods("GET")
 	r.Router.HandleFunc("/api/v1/page/{id}", r.handleGetPage()).Methods("GET")
-	r.Router.HandleFunc("/api/v1/news", r.handleGetNews()).Methods("GET")
-	r.Router.HandleFunc("/api/v1/news/{id}", r.handleGetOneNews()).Methods("GET")
+	r.Router.HandleFunc("/api/v1/news/{type}/{count}", r.handleGetNews()).Methods("GET")
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 
@@ -73,29 +72,48 @@ func (r *Router) handleGetNews() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Max-Age", "86400")
-		news, err := repos.GetNews(r.store)
-		if err != nil {
-			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
-			return
-		}
-		r.respond(w, q, http.StatusOK, news)
-	}
-}
-
-func (r *Router) handleGetOneNews() http.HandlerFunc {
-	return func(w http.ResponseWriter, q *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Max-Age", "86400")
 		params := mux.Vars(q)
-		news, err := repos.GetOneNews(r.store, params["id"])
-		if err != nil {
-			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
-			return
+
+		if params["type"] == "single" {
+			news, err := repos.GetOneNews(r.store, params["count"])
+			if err != nil {
+				r.logger.Logger.Error(err)
+				r.error(w, q, http.StatusBadRequest, err)
+				return
+			}
+			r.respond(w, q, http.StatusOK, news)
 		}
-		r.respond(w, q, http.StatusOK, news)
+
+		if params["type"] == "first" {
+			news, err := repos.GetFirstNews(r.store, params["count"])
+			if err != nil {
+				r.logger.Logger.Error(err)
+				r.error(w, q, http.StatusBadRequest, err)
+				return
+			}
+			r.respond(w, q, http.StatusOK, news)
+		}
+
+		if params["type"] == "count" {
+			count, err := repos.CountNews(r.store)
+			if err != nil {
+				r.logger.Logger.Error(err)
+				r.error(w, q, http.StatusBadRequest, err)
+				return
+			}
+			result := map[string]int{"count": count}
+			r.respond(w, q, http.StatusOK, result)
+		}
+
+		if params["type"] == "page" {
+			news, err := repos.GetPageOfNews(r.store, params["count"])
+			if err != nil {
+				r.logger.Logger.Error(err)
+				r.error(w, q, http.StatusBadRequest, err)
+				return
+			}
+			r.respond(w, q, http.StatusOK, news)
+		}
 	}
 }
 

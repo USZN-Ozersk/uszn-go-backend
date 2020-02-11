@@ -9,7 +9,7 @@ import (
 func GetPage(s *store.Store, id string) (*models.Page, error) {
 	var result models.Page
 
-	if err := s.Db.QueryRow("SELECT * FROM pages WHERE page_id = $1", id).Scan(&result.PageID, &result.PageName, &result.PageText); err != nil {
+	if err := s.Db.QueryRow("SELECT * FROM pages WHERE page_menu = $1", id).Scan(&result.PageID, &result.PageName, &result.PageText, &result.PageMenu); err != nil {
 		return nil, err
 	}
 

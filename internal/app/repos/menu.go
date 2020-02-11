@@ -18,7 +18,7 @@ func GetMenus(s *store.Store) (*[]models.Menu, error) {
 	for rows.Next() {
 		var result models.Menu
 
-		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent, &result.MenuPage); err != nil {
+		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent); err != nil {
 			return nil, err
 		}
 
