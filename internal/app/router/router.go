@@ -40,6 +40,8 @@ func (r *Router) ConfigureRouter() {
 func (r *Router) handleGetMenu() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Max-Age", "86400")
 		menu, err := repos.GetMenus(r.store)
 		if err != nil {
 			r.logger.Logger.Error(err)
@@ -53,6 +55,8 @@ func (r *Router) handleGetMenu() http.HandlerFunc {
 func (r *Router) handleGetPage() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Max-Age", "86400")
 		params := mux.Vars(q)
 		page, err := repos.GetPage(r.store, params["id"])
 		if err != nil {
@@ -67,6 +71,8 @@ func (r *Router) handleGetPage() http.HandlerFunc {
 func (r *Router) handleGetNews() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Max-Age", "86400")
 		news, err := repos.GetNews(r.store)
 		if err != nil {
 			r.logger.Logger.Error(err)
@@ -80,6 +86,8 @@ func (r *Router) handleGetNews() http.HandlerFunc {
 func (r *Router) handleGetOneNews() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Max-Age", "86400")
 		params := mux.Vars(q)
 		news, err := repos.GetOneNews(r.store, params["id"])
 		if err != nil {
