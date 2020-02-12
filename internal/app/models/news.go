@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/microcosm-cc/bluemonday"
+)
+
 // News ...
 type News struct {
 	NewsID   int    `json:"news_id"`
@@ -11,7 +15,9 @@ type News struct {
 
 // CutNewsText ...
 func (n *News) CutNewsText(limit int) {
-	runes := []rune(n.NewsText)
+	p := bluemonday.StrictPolicy()
+	text := p.Sanitize(n.NewsText)
+	runes := []rune(text)
 	if len(runes) >= limit {
 		n.NewsText = string(runes[:limit])
 	}

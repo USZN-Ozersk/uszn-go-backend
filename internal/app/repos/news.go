@@ -23,7 +23,7 @@ func GetFirstNews(r *store.Store, count string) (*[]models.News, error) {
 		if err := rows.Scan(&result.NewsID, &result.NewsName, &result.NewsDate, &result.NewsText, &result.NewsImg); err != nil {
 			return nil, err
 		}
-		result.CutNewsText(150)
+		result.CutNewsText(200)
 		results = append(results, result)
 	}
 
