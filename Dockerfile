@@ -1,11 +1,15 @@
-FROM golang:latest
+FROM golang:alpine as build
 RUN mkdir /app
 WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN go build -v ./cmd/apiserver
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -v ./cmd/apiserver
+
+FROM scratch
+COPY --from=build /app/apiserver /app/
+COPY config/config-prod.toml /app
+WORKDIR /app
 EXPOSE 8080
-#CMD ["/app/apiserver", "-config-path", "config/config.toml"]
-CMD ["/app/apiserver"]
+CMD ["/app/apiserver", "-config-path", "config-prod.toml"]
