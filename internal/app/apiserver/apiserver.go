@@ -2,6 +2,7 @@ package apiserver
 
 import (
 	"net/http"
+
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/router"
@@ -27,5 +28,5 @@ func New(config *config.Config, logger *logger.Logger, router *router.Router) *A
 func (s *APIServer) Start() error {
 	s.logger.Logger.Info("Starting API server at port " + s.config.BindAddr)
 
-	return http.ListenAndServe(s.config.BindAddr, s.router.Router)
+	return http.ListenAndServeTLS(s.config.BindAddr, "/etc/letsencrypt/live/usznozersk.ru/fullchain.pem", "/etc/letsencrypt/live/usznozersk.ru/privkey.pem", s.router.Router)
 }
