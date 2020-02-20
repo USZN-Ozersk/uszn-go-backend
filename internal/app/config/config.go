@@ -6,17 +6,23 @@ import (
 
 // Config ...
 type Config struct {
-	BindAddr string `toml:"bind_addr"`
-	LogLevel string `toml:"log_level"`
-	DB_URL   string `toml:"db_url"`
+	BindAddr  string `toml:"bind_addr"`
+	LogLevel  string `toml:"log_level"`
+	DB_URL    string `toml:"db_url"`
+	KeyString string `toml:"key_string"`
+	Admin     string `toml:"user"`
+	Password  string `toml:"password"`
 }
 
 // New ...
 func New() *Config {
 	return &Config{
-		BindAddr: ":8080",
-		LogLevel: "debug",
-		DB_URL:   "postgres://api:password@pgdb/api?sslmode=disable",
+		BindAddr:  ":8080",
+		LogLevel:  "debug",
+		DB_URL:    "postgres://api:password@pgdb/api?sslmode=disable",
+		KeyString: "passphrase",
+		Admin:     "admin",
+		Password:  "password",
 	}
 }
 

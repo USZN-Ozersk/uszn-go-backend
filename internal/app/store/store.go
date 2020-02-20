@@ -6,12 +6,13 @@ import (
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 
+	// ...
 	_ "github.com/lib/pq"
 )
 
 // Store ...
 type Store struct {
-	config *config.Config
+	Config *config.Config
 	logger *logger.Logger
 	Db     *sql.DB
 }
@@ -19,14 +20,14 @@ type Store struct {
 // New ...
 func New(config *config.Config, logger *logger.Logger) *Store {
 	return &Store{
-		config: config,
+		Config: config,
 		logger: logger,
 	}
 }
 
 // Open ...
 func (s *Store) Open() error {
-	db, err := sql.Open("postgres", s.config.DB_URL)
+	db, err := sql.Open("postgres", s.Config.DB_URL)
 	if err != nil {
 		return err
 	}

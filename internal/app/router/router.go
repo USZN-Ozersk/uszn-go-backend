@@ -2,12 +2,13 @@ package router
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/auth"
+	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/repos"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
-
-	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 
 	"github.com/gorilla/mux"
 )
@@ -30,17 +31,43 @@ func New(logger *logger.Logger, store *store.Store) *Router {
 
 // ConfigureRouter ...
 func (r *Router) ConfigureRouter() {
+	r.Router.Use(r.setHeader)
 	r.Router.HandleFunc("/api/v1/menu", r.handleGetMenu()).Methods("GET")
 	r.Router.HandleFunc("/api/v1/page/{id}", r.handleGetPage()).Methods("GET")
 	r.Router.HandleFunc("/api/v1/news/{type}/{count}", r.handleGetNews()).Methods("GET")
+	r.Router.HandleFunc("/api/v1/auth", r.handleAuth()).Methods("POST")
+
+	private := r.Router.PathPrefix("/api/v1/private").Subrouter()
+	private.Use(r.authenticateUser)
+	private.HandleFunc("/menu", r.handleGetMenu()).Methods("GET")
 	r.logger.Logger.Info("Handlers configuration complete")
+}
+
+func (r *Router) setHeader(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, q *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+		next.ServeHTTP(w, q)
+	})
+}
+
+func (r *Router) authenticateUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, q *http.Request) {
+		if q.Header["Token"] != nil {
+			if auth.UserAuthenticate(r.store, q.Header["Token"][0]) {
+				next.ServeHTTP(w, q)
+				return
+			}
+		}
+		var errUnauthorized = errors.New("Unauthorised")
+		r.logger.Logger.Error("Incorrect token")
+		r.error(w, q, http.StatusUnauthorized, errUnauthorized)
+	})
 }
 
 func (r *Router) handleGetMenu() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Max-Age", "86400")
 		menu, err := repos.GetMenus(r.store)
 		if err != nil {
 			r.logger.Logger.Error(err)
@@ -53,9 +80,6 @@ func (r *Router) handleGetMenu() http.HandlerFunc {
 
 func (r *Router) handleGetPage() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Max-Age", "86400")
 		params := mux.Vars(q)
 		page, err := repos.GetPage(r.store, params["id"])
 		if err != nil {
@@ -69,9 +93,6 @@ func (r *Router) handleGetPage() http.HandlerFunc {
 
 func (r *Router) handleGetNews() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Max-Age", "86400")
 		params := mux.Vars(q)
 
 		if params["type"] == "single" {
@@ -114,6 +135,31 @@ func (r *Router) handleGetNews() http.HandlerFunc {
 			}
 			r.respond(w, q, http.StatusOK, news)
 		}
+	}
+}
+
+func (r *Router) handleAuth() http.HandlerFunc {
+	type request struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	}
+
+	return func(w http.ResponseWriter, q *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+
+		token, err := auth.UserAuthorize(r.store, req.Login, req.Password)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusUnauthorized, err)
+			return
+		}
+		result := map[string]string{"jwt": token}
+		r.respond(w, q, http.StatusOK, result)
 	}
 }
 
