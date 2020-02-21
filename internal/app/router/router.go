@@ -48,6 +48,7 @@ func (r *Router) setHeader(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Max-Age", "86400")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD")
 		next.ServeHTTP(w, q)
 	})
 }
