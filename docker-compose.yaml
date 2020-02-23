@@ -3,7 +3,7 @@ services:
     api:
         build: .
         ports: 
-            - "81:81"
+            - "8080:8080"
         container_name: api
         networks: 
             - app-network
