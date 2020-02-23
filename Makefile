@@ -4,11 +4,11 @@ build:
 
 .PHONY: migrate
 migrate:
-		migrate -path migrations -database postgres://api:password@127.0.0.1/api?sslmode=disable up
+		migrate -path migrations -database postgres://api:manaraga@127.0.0.1/api?sslmode=disable up
 
 .PHONY: drop-db
 drop-db:
-		migrate -path migrations -database postgres://api:password@127.0.0.1/api?sslmode=disable drop
+		migrate -path migrations -database postgres://api:manaraga@127.0.0.1/api?sslmode=disable drop
 
 .PHONY: drop-docker
 drop-docker:
