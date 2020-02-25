@@ -2,3 +2,4 @@
 config/config-prod.toml
 apiserver.exe
 ./apiserver
+migrations/migrate.exe
