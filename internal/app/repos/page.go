@@ -15,3 +15,28 @@ func GetPage(s *store.Store, id string) (*models.Page, error) {
 
 	return &result, nil
 }
+
+// GetAllPages ...
+func GetAllPages(s *store.Store) (*[]models.HalfPage, error) {
+	var results []models.HalfPage
+
+	rows, err := s.Db.Query("SELECT page_id, page_name FROM pages")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var result models.HalfPage
+
+		if err := rows.Scan(&result.PageID, &result.PageName); err != nil {
+			return nil, err
+		}
+
+		results = append(results, result)
+	}
+
+	return &results, nil
+
+}

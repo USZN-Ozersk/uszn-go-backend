@@ -39,6 +39,7 @@ func (r *Router) ConfigureRouter() {
 
 	private := r.Router.PathPrefix("/api/v1/private").Subrouter()
 	private.Use(r.authenticateUser)
+	private.HandleFunc("/pages", r.handleGetAllPages()).Methods("GET")
 	private.HandleFunc("/menu", r.handleGetMenu()).Methods("GET")
 	r.logger.Logger.Info("Handlers configuration complete")
 }
@@ -76,6 +77,18 @@ func (r *Router) handleGetMenu() http.HandlerFunc {
 			return
 		}
 		r.respond(w, q, http.StatusOK, menu)
+	}
+}
+
+func (r *Router) handleGetAllPages() http.HandlerFunc {
+	return func(w http.ResponseWriter, q *http.Request) {
+		pages, err := repos.GetAllPages(r.store)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+		r.respond(w, q, http.StatusOK, pages)
 	}
 }
 
