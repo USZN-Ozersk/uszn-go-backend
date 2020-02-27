@@ -39,17 +39,13 @@ func (r *Router) ConfigureRouter() {
 
 	private := r.Router.PathPrefix("/api/v1/private").Subrouter()
 	private.Use(r.authenticateUser)
-	private.HandleFunc("/pages", r.handleGetAllPages()).Methods("GET")
-	private.HandleFunc("/menu", r.handleGetMenu()).Methods("GET")
+	private.HandleFunc("/pages", r.handleGetAllPages()).Methods("GET", "OPTIONS")
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 
 func (r *Router) setHeader(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, q *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Max-Age", "86400")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
 		next.ServeHTTP(w, q)
 	})
 }
@@ -61,6 +57,8 @@ func (r *Router) authenticateUser(next http.Handler) http.Handler {
 				next.ServeHTTP(w, q)
 				return
 			}
+		} else {
+			r.logger.Logger.Error("Token not accepted")
 		}
 		var errUnauthorized = errors.New("Unauthorised")
 		r.logger.Logger.Error("Incorrect token")
