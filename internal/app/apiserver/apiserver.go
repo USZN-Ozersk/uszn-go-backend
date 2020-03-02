@@ -30,7 +30,7 @@ func (s *APIServer) Start() error {
 	s.logger.Logger.Info("Starting API server at port " + s.config.BindAddr)
 
 	headers := handlers.AllowedHeaders([]string{"Content-Type", "Token"})
-	methods := handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "OPTIONS"})
 	origins := handlers.AllowedOrigins([]string{"*"})
 
 	//return http.ListenAndServeTLS(s.config.BindAddr, "/etc/letsencrypt/live/usznozersk.ru/fullchain.pem", "/etc/letsencrypt/live/usznozersk.ru/privkey.pem", s.router.Router)
