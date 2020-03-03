@@ -1,6 +1,7 @@
 package router
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/repos"
@@ -52,5 +53,84 @@ func (r *Router) handleGetNews() http.HandlerFunc {
 			}
 			r.respond(w, q, http.StatusOK, news)
 		}
+	}
+}
+func (r *Router) handleInsertNews() http.HandlerFunc {
+	type request struct {
+		Name string `json:"name"`
+		Text string `json:"text"`
+		Img  string `json:"img"`
+	}
+
+	return func(w http.ResponseWriter, q *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+
+		err := repos.InsertNews(r.store, req.Name, req.Text, req.Img)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusInternalServerError, err)
+			return
+		}
+		result := map[string]string{"result": "ok"}
+
+		r.respond(w, q, http.StatusOK, result)
+	}
+}
+
+func (r *Router) handleDeleteNews() http.HandlerFunc {
+	type request struct {
+		ID int `json:"id"`
+	}
+
+	return func(w http.ResponseWriter, q *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+
+		err := repos.DeleteNews(r.store, req.ID)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusInternalServerError, err)
+			return
+		}
+		result := map[string]string{"result": "ok"}
+
+		r.respond(w, q, http.StatusOK, result)
+	}
+}
+
+func (r *Router) handleUpdateNews() http.HandlerFunc {
+	type request struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+		Text string `json:"text"`
+		Img  string `json:"img"`
+	}
+
+	return func(w http.ResponseWriter, q *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+
+		err := repos.UpdateNews(r.store, req.ID, req.Name, req.Text, req.Img)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusInternalServerError, err)
+			return
+		}
+		result := map[string]string{"result": "ok"}
+
+		r.respond(w, q, http.StatusOK, result)
 	}
 }

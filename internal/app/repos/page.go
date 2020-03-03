@@ -20,7 +20,7 @@ func GetPage(s *store.Store, id string) (*models.Page, error) {
 func GetAllPages(s *store.Store) (*[]models.HalfPage, error) {
 	var results []models.HalfPage
 
-	rows, err := s.Db.Query("SELECT page_id, page_name FROM pages")
+	rows, err := s.Db.Query("SELECT page_id, page_name, page_menu FROM pages")
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func GetAllPages(s *store.Store) (*[]models.HalfPage, error) {
 	for rows.Next() {
 		var result models.HalfPage
 
-		if err := rows.Scan(&result.PageID, &result.PageName); err != nil {
+		if err := rows.Scan(&result.PageID, &result.PageName, &result.PageMenu); err != nil {
 			return nil, err
 		}
 
@@ -39,4 +39,31 @@ func GetAllPages(s *store.Store) (*[]models.HalfPage, error) {
 
 	return &results, nil
 
+}
+
+// InsertPage ...
+func InsertPage(s *store.Store, name string, text string, menu int) error {
+	_, err := s.Db.Exec("INSERT INTO pages (page_name, page_text, page_menu) VALUES ($1, $2, $3)", name, text, menu)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeletePage ...
+func DeletePage(s *store.Store, id int) error {
+	_, err := s.Db.Exec("DELETE FROM pages WHERE page_id=$1", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpdatePage ...
+func UpdatePage(s *store.Store, id int, name string, text string, menu int) error {
+	_, err := s.Db.Exec("UPDATE pages SET page_name=$2, page_text=$3, page_menu=$4 WHERE page_id=$1", id, name, text, menu)
+	if err != nil {
+		return err
+	}
+	return nil
 }

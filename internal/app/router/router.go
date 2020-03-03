@@ -39,6 +39,12 @@ func (r *Router) ConfigureRouter() {
 	private.HandleFunc("/menu", r.handleInsertMenu()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/menu", r.handleDeleteMenu()).Methods("DELETE", "OPTIONS")
 	private.HandleFunc("/menu", r.handleUpdateMenu()).Methods("PUT", "OPTIONS")
+	private.HandleFunc("/news", r.handleInsertNews()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/news", r.handleDeleteNews()).Methods("DELETE", "OPTIONS")
+	private.HandleFunc("/news", r.handleUpdateNews()).Methods("PUT", "OPTIONS")
+	private.HandleFunc("/page", r.handleInsertPage()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/page", r.handleDeletePage()).Methods("DELETE", "OPTIONS")
+	private.HandleFunc("/page", r.handleUpdatePage()).Methods("PUT", "OPTIONS")
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 

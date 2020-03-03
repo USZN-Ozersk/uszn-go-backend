@@ -11,5 +11,6 @@ type Page struct {
 // HalfPage ...
 type HalfPage struct {
 	PageID   int    `json:"page_id"`
+	PageMenu int    `json:"page_menu"`
 	PageName string `json:"page_name"`
 }

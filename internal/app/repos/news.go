@@ -74,3 +74,30 @@ func GetPageOfNews(r *store.Store, page string) (*[]models.News, error) {
 	return &results, nil
 
 }
+
+// InsertNews ...
+func InsertNews(s *store.Store, name string, text string, img string) error {
+	_, err := s.Db.Exec("INSERT INTO news (news_name, news_text, news_img) VALUES ($1, $2, $3)", name, text, img)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteNews ...
+func DeleteNews(s *store.Store, id int) error {
+	_, err := s.Db.Exec("DELETE FROM news WHERE news_id=$1", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpdateNews ...
+func UpdateNews(s *store.Store, id int, name string, text string, img string) error {
+	_, err := s.Db.Exec("UPDATE news SET news_name=$2, news_text=$3, news_img=$4 WHERE news_id=$1", id, name, text, img)
+	if err != nil {
+		return err
+	}
+	return nil
+}
