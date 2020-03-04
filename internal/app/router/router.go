@@ -45,6 +45,7 @@ func (r *Router) ConfigureRouter() {
 	private.HandleFunc("/page", r.handleInsertPage()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/page", r.handleDeletePage()).Methods("DELETE", "OPTIONS")
 	private.HandleFunc("/page", r.handleUpdatePage()).Methods("PUT", "OPTIONS")
+	private.HandleFunc("/upload", r.handleUpload()).Methods("POST", "OPTIONS")
 	r.logger.Logger.Info("Handlers configuration complete")
 }
 
@@ -53,6 +54,23 @@ func (r *Router) setHeader(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		next.ServeHTTP(w, q)
 	})
+}
+
+func (r *Router) handleUpload() http.HandlerFunc {
+	return func(w http.ResponseWriter, q *http.Request) {
+		q.ParseMultipartForm(32 << 20)
+		file, handler, err := q.FormFile("myFile")
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+
+		defer file.Close()
+		r.logger.Logger.Info(handler.Filename)
+		r.logger.Logger.Info(handler.Size)
+		r.logger.Logger.Info(handler.Header)
+	}
 }
 
 func (r *Router) error(w http.ResponseWriter, q *http.Request, code int, err error) {
