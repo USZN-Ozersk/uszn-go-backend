@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
@@ -69,7 +70,10 @@ func (r *Router) handleUpload() http.HandlerFunc {
 		}
 
 		defer file.Close()
-		f, err := os.OpenFile("/upload/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		current := time.Now()
+		path := "/upload/" + current.Format("2006") + "/" + current.Format("01") + "/" + current.Format("02") + "/"
+		r.createDirIfNotExist(path)
+		f, err := os.OpenFile(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			r.logger.Logger.Error(err)
 			r.error(w, q, http.StatusBadRequest, err)
@@ -79,6 +83,15 @@ func (r *Router) handleUpload() http.HandlerFunc {
 		io.Copy(f, file)
 		result := map[string]string{"url": f.Name()}
 		r.respond(w, q, http.StatusOK, result)
+	}
+}
+
+func (r *Router) createDirIfNotExist(dir string) {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			r.logger.Logger.Error(err)
+		}
 	}
 }
 
