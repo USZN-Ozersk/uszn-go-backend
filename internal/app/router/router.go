@@ -2,7 +2,9 @@ package router
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/logger"
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/store"
@@ -59,7 +61,7 @@ func (r *Router) setHeader(next http.Handler) http.Handler {
 func (r *Router) handleUpload() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
 		q.ParseMultipartForm(32 << 20)
-		file, handler, err := q.FormFile("myFile")
+		file, handler, err := q.FormFile("file")
 		if err != nil {
 			r.logger.Logger.Error(err)
 			r.error(w, q, http.StatusBadRequest, err)
@@ -67,9 +69,16 @@ func (r *Router) handleUpload() http.HandlerFunc {
 		}
 
 		defer file.Close()
-		r.logger.Logger.Info(handler.Filename)
-		r.logger.Logger.Info(handler.Size)
-		r.logger.Logger.Info(handler.Header)
+		f, err := os.OpenFile("/upload/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, q, http.StatusBadRequest, err)
+			return
+		}
+		defer f.Close()
+		io.Copy(f, file)
+		result := map[string]string{"url": f.Name()}
+		r.respond(w, q, http.StatusOK, result)
 	}
 }
 

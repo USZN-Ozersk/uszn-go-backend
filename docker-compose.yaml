@@ -10,6 +10,7 @@ services:
         volumes:
             - certbot-etc:/etc/letsencrypt
             - certbot-var:/var/lib/letsencrypt
+            - www-upload:/upload
         depends_on: 
             - pgdb
     pgdb:
@@ -29,6 +30,7 @@ services:
 volumes:
     certbot-etc:
     certbot-var:
+    www-upload:
 networks:
     app-network:
         driver: bridge
