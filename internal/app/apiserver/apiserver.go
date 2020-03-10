@@ -34,5 +34,5 @@ func (s *APIServer) Start() error {
 	origins := handlers.AllowedOrigins([]string{"*"})
 
 	//return http.ListenAndServeTLS(s.config.BindAddr, "/etc/letsencrypt/live/usznozersk.ru/fullchain.pem", "/etc/letsencrypt/live/usznozersk.ru/privkey.pem", s.router.Router)
-	return http.ListenAndServe(s.config.BindAddr, handlers.CORS(headers, methods, origins)(s.router.Router))
+	return http.ListenAndServeTLS(s.config.BindAddr, "/etc/letsencrypt/live/usznozersk.ru/fullchain.pem", "/etc/letsencrypt/live/usznozersk.ru/privkey.pem", handlers.CORS(headers, methods, origins)(s.router.Router))
 }
