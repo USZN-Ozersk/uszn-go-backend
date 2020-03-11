@@ -8,7 +8,7 @@ import (
 // GetMenus ...
 func GetMenus(s *store.Store) (*[]models.Menu, error) {
 	var results []models.Menu
-	rows, err := s.Db.Query("SELECT * FROM menu")
+	rows, err := s.Db.Query("SELECT * FROM menu ORDER BY menu_id")
 	if err != nil {
 		return nil, err
 	}
