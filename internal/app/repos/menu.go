@@ -18,7 +18,7 @@ func GetMenus(s *store.Store) (*[]models.Menu, error) {
 	for rows.Next() {
 		var result models.Menu
 
-		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent); err != nil {
+		if err := rows.Scan(&result.MenuID, &result.MenuItem, &result.MenuParent, &result.CustomLink, &result.CustomLinkValue); err != nil {
 			return nil, err
 		}
 
@@ -28,8 +28,8 @@ func GetMenus(s *store.Store) (*[]models.Menu, error) {
 }
 
 // InsertMenu ...
-func InsertMenu(s *store.Store, name string, parent int) error {
-	_, err := s.Db.Exec("INSERT INTO menu (menu_item, menu_parent) VALUES ($1, $2)", name, parent)
+func InsertMenu(s *store.Store, name string, parent int, custom bool, customValue string) error {
+	_, err := s.Db.Exec("INSERT INTO menu (menu_item, menu_parent, custom_link, custom_link_value) VALUES ($1, $2, $3, $4)", name, parent, custom, customValue)
 	if err != nil {
 		return err
 	}
@@ -46,8 +46,8 @@ func DeleteMenu(s *store.Store, id int) error {
 }
 
 // UpdateMenu ...
-func UpdateMenu(s *store.Store, id int, name string, parent int) error {
-	_, err := s.Db.Exec("UPDATE menu SET menu_item=$2, menu_parent=$3 WHERE menu_id=$1", id, name, parent)
+func UpdateMenu(s *store.Store, id int, name string, parent int, custom bool, customValue string) error {
+	_, err := s.Db.Exec("UPDATE menu SET menu_item=$2, menu_parent=$3, custom_link=$4, custom_link_value=$5 WHERE menu_id=$1", id, name, parent, custom, customValue)
 	if err != nil {
 		return err
 	}

@@ -12,6 +12,7 @@ type Config struct {
 	KeyString string `toml:"key_string"`
 	Admin     string `toml:"user"`
 	Password  string `toml:"password"`
+	UseSSL    bool   `toml:"use_ssl"`
 }
 
 // New ...
@@ -23,6 +24,7 @@ func New() *Config {
 		KeyString: "passphrase",
 		Admin:     "admin",
 		Password:  "password",
+		UseSSL:    false,
 	}
 }
 

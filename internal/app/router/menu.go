@@ -21,8 +21,10 @@ func (r *Router) handleGetMenu() http.HandlerFunc {
 
 func (r *Router) handleInsertMenu() http.HandlerFunc {
 	type request struct {
-		MenuItem   string `json:"menuitem"`
-		MenuParent int    `json:"menuparent"`
+		MenuItem        string `json:"menuitem"`
+		MenuParent      int    `json:"menuparent"`
+		CustomLink      bool   `json:"customlink"`
+		CustomLinkValue string `json:"customlinkvalue"`
 	}
 
 	return func(w http.ResponseWriter, q *http.Request) {
@@ -33,7 +35,7 @@ func (r *Router) handleInsertMenu() http.HandlerFunc {
 			return
 		}
 
-		err := repos.InsertMenu(r.store, req.MenuItem, req.MenuParent)
+		err := repos.InsertMenu(r.store, req.MenuItem, req.MenuParent, req.CustomLink, req.CustomLinkValue)
 		if err != nil {
 			r.logger.Logger.Error(err)
 			r.error(w, q, http.StatusInternalServerError, err)
@@ -72,9 +74,11 @@ func (r *Router) handleDeleteMenu() http.HandlerFunc {
 
 func (r *Router) handleUpdateMenu() http.HandlerFunc {
 	type request struct {
-		ID         int    `json:"id"`
-		MenuItem   string `json:"menuitem"`
-		MenuParent int    `json:"menuparent"`
+		ID              int    `json:"id"`
+		MenuItem        string `json:"menuitem"`
+		MenuParent      int    `json:"menuparent"`
+		CustomLink      bool   `json:"customlink"`
+		CustomLinkValue string `json:"customlinkvalue"`
 	}
 
 	return func(w http.ResponseWriter, q *http.Request) {
@@ -85,7 +89,7 @@ func (r *Router) handleUpdateMenu() http.HandlerFunc {
 			return
 		}
 
-		err := repos.UpdateMenu(r.store, req.ID, req.MenuItem, req.MenuParent)
+		err := repos.UpdateMenu(r.store, req.ID, req.MenuItem, req.MenuParent, req.CustomLink, req.CustomLinkValue)
 		if err != nil {
 			r.logger.Logger.Error(err)
 			r.error(w, q, http.StatusInternalServerError, err)
