@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflag
 
 FROM scratch
 COPY --from=build /app/apiserver /app/
-COPY config/config-prod.toml /app/
+#COPY config/config-prod.toml /app/
 WORKDIR /app
 EXPOSE 8080
 CMD ["/app/apiserver", "-config-path", "config-prod.toml"]
