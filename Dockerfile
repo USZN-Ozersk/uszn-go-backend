@@ -1,4 +1,4 @@
-FROM golang:alpine as build
+FROM golang:latest as build
 RUN mkdir /app
 WORKDIR /app
 COPY go.mod .

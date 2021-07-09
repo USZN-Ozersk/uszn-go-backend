@@ -8,7 +8,7 @@ import (
 
 	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
 
-	mail "github.com/xhit/go-simple-mail"
+	mail "github.com/xhit/go-simple-mail/v2"
 )
 
 type MailMessage struct {
