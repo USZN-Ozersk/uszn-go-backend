@@ -35,6 +35,7 @@ func (r *Router) ConfigureRouter() {
 	r.Router.HandleFunc("/api/v1/page/{id}", r.handleGetPage()).Methods("GET")
 	r.Router.HandleFunc("/api/v1/news/{type}/{count}", r.handleGetNews()).Methods("GET")
 	r.Router.HandleFunc("/api/v1/auth", r.handleAuth()).Methods("POST")
+	r.Router.HandleFunc("/api/v1/feedback", r.handleMail()).Methods("POST")
 
 	private := r.Router.PathPrefix("/api/v1/private").Subrouter()
 	private.Use(r.authenticateUser)
@@ -61,11 +62,15 @@ func (r *Router) setHeader(next http.Handler) http.Handler {
 
 func (r *Router) handleUpload() http.HandlerFunc {
 	return func(w http.ResponseWriter, q *http.Request) {
-		q.ParseMultipartForm(32 << 20)
+		if err := q.ParseMultipartForm(32 << 20); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, http.StatusBadRequest, err)
+			return
+		}
 		file, handler, err := q.FormFile("file")
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
@@ -76,13 +81,17 @@ func (r *Router) handleUpload() http.HandlerFunc {
 		f, err := os.OpenFile(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 		defer f.Close()
-		io.Copy(f, file)
+		if _, err := io.Copy(f, file); err != nil {
+			r.logger.Logger.Error(err)
+			r.error(w, http.StatusInternalServerError, err)
+			return
+		}
 		result := map[string]string{"url": f.Name()}
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
 
@@ -95,13 +104,15 @@ func (r *Router) createDirIfNotExist(dir string) {
 	}
 }
 
-func (r *Router) error(w http.ResponseWriter, q *http.Request, code int, err error) {
-	r.respond(w, q, code, map[string]string{"error": err.Error()})
+func (r *Router) error(w http.ResponseWriter, code int, err error) {
+	r.respond(w, code, map[string]string{"error": err.Error()})
 }
 
-func (r *Router) respond(w http.ResponseWriter, q *http.Request, code int, data interface{}) {
+func (r *Router) respond(w http.ResponseWriter, code int, data interface{}) {
 	w.WriteHeader(code)
 	if data != nil {
-		json.NewEncoder(w).Encode(data)
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			r.logger.Logger.Error(err)
+		}
 	}
 }

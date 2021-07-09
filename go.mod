@@ -1,6 +1,6 @@
 module github.com/USZN-Ozersk/uszn-go-backend
 
-go 1.13
+go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.3.1
@@ -12,5 +12,6 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.15
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/xhit/go-simple-mail v2.2.2+incompatible
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 )
