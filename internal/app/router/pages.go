@@ -14,10 +14,10 @@ func (r *Router) handleGetAllPages() http.HandlerFunc {
 		pages, err := repos.GetAllPages(r.store)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
-		r.respond(w, q, http.StatusOK, pages)
+		r.respond(w, http.StatusOK, pages)
 	}
 }
 
@@ -27,10 +27,10 @@ func (r *Router) handleGetPage() http.HandlerFunc {
 		page, err := repos.GetPage(r.store, params["id"])
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
-		r.respond(w, q, http.StatusOK, page)
+		r.respond(w, http.StatusOK, page)
 	}
 }
 func (r *Router) handleInsertPage() http.HandlerFunc {
@@ -44,19 +44,19 @@ func (r *Router) handleInsertPage() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.InsertPage(r.store, req.Name, req.Text, req.Menu)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
 
@@ -69,19 +69,19 @@ func (r *Router) handleDeletePage() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.DeletePage(r.store, req.ID)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
 
@@ -97,18 +97,18 @@ func (r *Router) handleUpdatePage() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.UpdatePage(r.store, req.ID, req.Name, req.Text, req.Menu)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }

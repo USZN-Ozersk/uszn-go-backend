@@ -20,7 +20,7 @@ func (r *Router) authenticateUser(next http.Handler) http.Handler {
 		}
 		var errUnauthorized = errors.New("Unauthorised")
 		r.logger.Logger.Error("Incorrect token")
-		r.error(w, q, http.StatusUnauthorized, errUnauthorized)
+		r.error(w, http.StatusUnauthorized, errUnauthorized)
 	})
 }
 
@@ -34,17 +34,17 @@ func (r *Router) handleAuth() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		token, err := auth.UserAuthorize(r.store, req.Login, req.Password)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusUnauthorized, err)
+			r.error(w, http.StatusUnauthorized, err)
 			return
 		}
 		result := map[string]string{"jwt": token}
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }

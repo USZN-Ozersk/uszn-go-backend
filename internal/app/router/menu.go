@@ -12,10 +12,10 @@ func (r *Router) handleGetMenu() http.HandlerFunc {
 		menu, err := repos.GetMenus(r.store)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
-		r.respond(w, q, http.StatusOK, menu)
+		r.respond(w, http.StatusOK, menu)
 	}
 }
 
@@ -31,19 +31,19 @@ func (r *Router) handleInsertMenu() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.InsertMenu(r.store, req.MenuItem, req.MenuParent, req.CustomLink, req.CustomLinkValue)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
 
@@ -56,19 +56,19 @@ func (r *Router) handleDeleteMenu() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.DeleteMenu(r.store, req.ID)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
 
@@ -85,18 +85,18 @@ func (r *Router) handleUpdateMenu() http.HandlerFunc {
 		req := &request{}
 		if err := json.NewDecoder(q.Body).Decode(req); err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusBadRequest, err)
+			r.error(w, http.StatusBadRequest, err)
 			return
 		}
 
 		err := repos.UpdateMenu(r.store, req.ID, req.MenuItem, req.MenuParent, req.CustomLink, req.CustomLinkValue)
 		if err != nil {
 			r.logger.Logger.Error(err)
-			r.error(w, q, http.StatusInternalServerError, err)
+			r.error(w, http.StatusInternalServerError, err)
 			return
 		}
 		result := map[string]string{"result": "ok"}
 
-		r.respond(w, q, http.StatusOK, result)
+		r.respond(w, http.StatusOK, result)
 	}
 }
