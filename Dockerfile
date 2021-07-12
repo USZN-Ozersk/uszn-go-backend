@@ -7,7 +7,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -v ./cmd/apiserver
 
-FROM scratch
+FROM alpine
 COPY --from=build /app/apiserver /app/
 #COPY config/config-prod.toml /app/
 WORKDIR /app

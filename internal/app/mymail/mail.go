@@ -5,14 +5,13 @@ import (
 	"crypto/tls"
 	"io"
 	"mime/multipart"
-
-	"github.com/USZN-Ozersk/uszn-go-backend/internal/app/config"
+	"os"
+	"strconv"
 
 	mail "github.com/xhit/go-simple-mail/v2"
 )
 
 type MailMessage struct {
-	config          *config.Config
 	File            multipart.File
 	FileName        string
 	SenderName      string
@@ -24,11 +23,6 @@ type MailMessage struct {
 }
 
 func (m *MailMessage) SendMail() error {
-	buf := bytes.NewBuffer(nil)
-	if _, err := io.Copy(buf, m.File); err != nil {
-		return err
-	}
-
 	messageBody := ""
 	messageBody += "Фамилия Имя Отчество гражданина: " + m.SenderName + ".\n\r"
 	messageBody += "Тема обращения гражданина: " + m.QuestionSubject + ".\n\r"
@@ -38,14 +32,14 @@ func (m *MailMessage) SendMail() error {
 	messageBody += "Текст обращения гражданина: " + m.QuestionText + ".\n\r"
 
 	server := mail.NewSMTPClient()
-	server.Host = m.config.MailServer
-	server.Port = m.config.MailPort
-	server.Username = m.config.MailUser
-	server.Password = m.config.MailPassword
+	server.Host = os.Getenv("MAIL_SERVER")
+	server.Port, _ = strconv.Atoi(os.Getenv("MAIL_PORT"))
+	server.Username = os.Getenv("MAIL_USER")
+	server.Password = os.Getenv("MAIL_PASSWORD")
 	server.Encryption = mail.EncryptionSSLTLS
 	server.Authentication = mail.AuthLogin
 	server.KeepAlive = false
-	server.TLSConfig = &tls.Config{ServerName: m.config.MailServer}
+	server.TLSConfig = &tls.Config{ServerName: os.Getenv("MAIL_SERVER")}
 	smtpClient, err := server.Connect()
 	if err != nil {
 		return err
@@ -55,15 +49,20 @@ func (m *MailMessage) SendMail() error {
 	email.SetFrom("feedback@usznozersk.ru").AddTo("uszn.it@ozerskadm.ru").SetSubject("Обращение гражданина:" + m.SenderName)
 	email.SetBody(mail.TextPlain, messageBody)
 	if m.File != nil {
-		email.Attach(&mail.File{Data: buf.Bytes(), Name: m.FileName})
-		if email.Error != nil {
-			return email.Error
+		buf := bytes.NewBuffer(nil)
+		if _, err := io.Copy(buf, m.File); err != nil {
+			return err
+		} else {
+			email.Attach(&mail.File{Data: buf.Bytes(), Name: m.FileName})
 		}
+	}
+
+	if email.Error != nil {
+		return email.Error
 	}
 
 	if err = email.Send(smtpClient); err != nil {
 		return err
 	}
-
 	return nil
 }

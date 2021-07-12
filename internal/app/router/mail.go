@@ -20,7 +20,15 @@ func (r *Router) handleMail() http.HandlerFunc {
 		if err == nil {
 			m.File = file
 			m.FileName = handler.Filename
+			defer file.Close()
 		}
+
+		m.SenderName = q.FormValue("name")
+		m.SenderAddress = q.FormValue("address")
+		m.SenderEmail = q.FormValue("email")
+		m.SenderPhone = q.FormValue("phone")
+		m.QuestionSubject = q.FormValue("subj")
+		m.QuestionText = q.FormValue("text")
 
 		err = m.SendMail()
 		if err != nil {
