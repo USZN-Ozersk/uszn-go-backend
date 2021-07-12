@@ -46,7 +46,7 @@ func (m *MailMessage) SendMail() error {
 	}
 
 	email := mail.NewMSG()
-	email.SetFrom("feedback@usznozersk.ru").AddTo("uszn.it@ozerskadm.ru").SetSubject("Обращение гражданина:" + m.SenderName)
+	email.SetFrom("feedback@usznozersk.ru").AddTo("ksz@ozerskadm.ru").SetSubject("Обращение гражданина:" + m.SenderName)
 	email.SetBody(mail.TextPlain, messageBody)
 	if m.File != nil {
 		buf := bytes.NewBuffer(nil)
