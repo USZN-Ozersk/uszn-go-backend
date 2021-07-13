@@ -20,6 +20,7 @@ type MailMessage struct {
 	SenderPhone     string
 	QuestionText    string
 	QuestionSubject string
+	ReplySendMethod string
 }
 
 func (m *MailMessage) SendMail() error {
@@ -30,6 +31,14 @@ func (m *MailMessage) SendMail() error {
 	messageBody += "Адрес электронной почты гражданина: " + m.SenderEmail + ".\n\r"
 	messageBody += "Телефон гражданина: " + m.SenderPhone + ".\n\r"
 	messageBody += "Текст обращения гражданина: " + m.QuestionText + ".\n\r"
+	switch m.ReplySendMethod {
+	case "mail":
+		messageBody += "Ответ направить по электронной почте.\n\r"
+	case "letter":
+		messageBody += "Ответ направить письмом на адрес регистрации.\n\r"
+	default:
+		messageBody += "Метод отправки сообщения не определен"
+	}
 
 	server := mail.NewSMTPClient()
 	server.Host = os.Getenv("MAIL_SERVER")

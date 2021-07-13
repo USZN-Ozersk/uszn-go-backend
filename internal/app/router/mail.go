@@ -29,6 +29,7 @@ func (r *Router) handleMail() http.HandlerFunc {
 		m.SenderPhone = q.FormValue("phone")
 		m.QuestionSubject = q.FormValue("subj")
 		m.QuestionText = q.FormValue("text")
+		m.ReplySendMethod = q.FormValue("sendm")
 
 		err = m.SendMail()
 		if err != nil {
