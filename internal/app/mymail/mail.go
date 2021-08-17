@@ -32,7 +32,7 @@ func (m *MailMessage) SendMail() error {
 	messageBody += "Телефон гражданина: " + m.SenderPhone + ".\n\r"
 	messageBody += "Текст обращения гражданина: " + m.QuestionText + ".\n\r"
 	switch m.ReplySendMethod {
-	case "mail":
+	case "email":
 		messageBody += "Ответ направить по электронной почте.\n\r"
 	case "letter":
 		messageBody += "Ответ направить письмом на адрес регистрации.\n\r"
